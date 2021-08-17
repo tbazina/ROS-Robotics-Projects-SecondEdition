@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+from yaml import serialize
+import rospy
+from multiprocessing import Process
+# from std_msgs.msg import Int32, Bool
+import actionlib
+from battery_simulator.msg import (
+  battery_simAction, battery_simGoal, battery_simResult, battery_simFeedback
+)
+
+class BatterySimServerNode:
+  def __init__(self, name):
+    self.action_name = name
+    self.result = battery_simResult()
+    self.feedback = battery_simFeedback()
+    self.action_server = actionlib.SimpleActionServer(
+      name=self.action_name, ActionSpec=battery_simAction,
+      execute_cb=self.callbackFun, auto_start=False
+      )
+    self.action_server.start()
+    self.battery_level = 100
+
+  def callbackFun(self, goal):
+    """
+    We assume that the goal from the client is Boolean. If the goal that's
+    received is 0, then it means that the battery is in a discharging state and
+    if it is 1, the battery is in a charging state.
+
+    Args:
+        goal (object): charge_state: 0 - discarging, 1 - charging
+    """
+    # 2 Hz rate
+    rate = rospy.Rate(0.5)
+    success = False
+    rospy.loginfo('Recieved goal: {}'.format(goal.charge_state))
+    rospy.set_param('/MyRobot/BatteryStatus', goal.charge_state)
+
+    # Charging/Discharging process
+    while not rospy.is_shutdown():
+      # Check that preempt has not been requested by the client
+      if self.action_server.is_preempt_requested():
+        rospy.loginfo('Changing state ----')
+        self.action_server.set_preempted()
+        success = False
+        break
+
+      try:
+        param = rospy.get_param('/MyRobot/BatteryStatus')
+        if param:
+          if self.battery_level == 100:
+            success = True
+            break
+          else:
+            self.battery_level += 1
+            self.feedback.battery_percentage = self.battery_level
+            self.action_server.publish_feedback(self.feedback)
+            # rospy.loginfo('Charging ... currently: {} %'.format(self.battery_level))
+        else:
+          self.battery_level -= 1
+          self.feedback.battery_percentage = self.battery_level
+          self.action_server.publish_feedback(self.feedback)
+          # rospy.loginfo('Discharging ... currently: {} %'.format(self.battery_level))
+      except:
+        rospy.logdebug('Parameter /MyRobot/BatteryStatus does not exist')
+
+      # Wait before next iteration
+      rate.sleep()
+
+    if success:
+      self.result.battery_status = 'Full'
+      rospy.loginfo('Setting result!!!')
+      self.action_server.set_succeeded(self.result)
+      
+if __name__ == "__main__":
+  rospy.init_node("battery_simulator")
+  rospy.loginfo("Starting BatterySimServerNode as BatterySimServer.")
+  BatterySimServer = BatterySimServerNode(rospy.get_name())
+  rospy.spin()

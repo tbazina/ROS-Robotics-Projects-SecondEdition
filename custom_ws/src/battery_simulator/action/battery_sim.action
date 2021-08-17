@@ -1,0 +1,8 @@
+# goal
+bool charge_state
+---
+# result
+string battery_status
+---
+# feedback
+int64 battery_percentage

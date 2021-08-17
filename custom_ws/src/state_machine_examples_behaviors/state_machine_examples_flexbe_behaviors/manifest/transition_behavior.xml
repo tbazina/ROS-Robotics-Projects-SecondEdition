@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Transition Behavior">
+
+	<executable package_path="state_machine_examples_flexbe_behaviors.transition_behavior_sm" class="TransitionBehaviorSM" />
+	<tagstring></tagstring>
+	<author>Tomislav Bazina</author>
+	<date>Mon Aug 16 2021</date>
+	<description>
+		In this example, we have four states: A, B, C, and D. This example aims to transition from one state to another on reception of an output.
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="num_transits" default="10" label="num_transits" hint="Sets the num_transits">
+			<min value="0" />
+			<max value="2000" />
+		</param>
+
+		<param type="text" name="transit_dir" default="cw" label="transit_dir" hint="Sets the transit_dir" />
+
+	</params>
+
+
+</behavior>

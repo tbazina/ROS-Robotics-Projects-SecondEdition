@@ -1,3 +1,11 @@
 
 # Default ignored files
 .idea
+
+custom_ws/.catkin_tools
+custom_ws/build
+custom_ws/devel
+custom_ws/logs
+.vscode
+.gitignore~
+
