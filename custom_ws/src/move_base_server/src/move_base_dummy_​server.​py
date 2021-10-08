@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+import rospy
+# from std_msgs.msg import Int32, Bool
+import actionlib
+from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
+from std_msgs.msg import Header
+from move_base_msgs.msg import (
+  MoveBaseAction, MoveBaseActionGoal, MoveBaseActionFeedback, MoveBaseResult,
+  MoveBaseActionResult, MoveBaseGoal, MoveBaseFeedback
+)
+
+class MoveBaseDummyServerNode:
+  def __init__(self, name):
+    self.action_name = name
+    self.result = MoveBaseActionResult()
+    self.feedback = MoveBaseActionFeedback()
+    self.action_server = actionlib.SimpleActionServer(
+      name=self.action_name, ActionSpec=MoveBaseAction,
+      execute_cb=self.callbackFun, auto_start=False
+      )
+    self.action_server.start()
+
+  def callbackFun(self, goal):
+    """
+    Goal is a geometry_msgs/PoseStamped object
+
+    Args:
+        goal (PoseStamped):
+    """
+    # 2 Hz rate
+    rate = rospy.Rate(0.5)
+    success = False
+    rospy.loginfo('Recieved goal:\n{}'.format(goal.target_pose))
+
+    # Process
+    while not rospy.is_shutdown():
+      break
+      # Check that preempt has not been requested by the client
+      if self.action_server.is_preempt_requested():
+        rospy.loginfo('Changing goal Pose ----')
+        self.action_server.set_preempted()
+        success = False
+        break
+
+    # Check if pose reached
+    success = True
+    if success:
+      # self.result= PoseStamped()
+      # self.result.pose = goal.target_pose.pose
+      rospy.loginfo('Goal pose reached!!!')
+      self.action_server.set_succeeded()
+
+      # Wait before next iteration
+      rate.sleep()
+
+      
+if __name__ == "__main__":
+  rospy.init_node("move_base")
+  rospy.loginfo("Starting move_base_dummy_server.")
+  MoveBaseDummyServer = MoveBaseDummyServerNode('move_base_dummy_server')
+  rospy.spin()

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- <node pkg="map_server" type="map_server" name="map_server" args=""/> -->
+  <include file="$(find navigation)/launch/amcl_diff.launch" />
+
+  <node pkg="move_base" type="move_base" name="move_base" output="screen"
+    respawn="false" >
+    <rosparam file="$(find navigation)/config/costmap_common_params.yaml"
+     command="load" ns="global_costmap" />
+    <rosparam file="$(find navigation)/config/costmap_common_params.yaml"
+     command="load" ns="local_costmap" />
+    <rosparam file="$(find navigation)/config/local_costmap_params.yaml"
+     command="load" />
+    <rosparam file="$(find navigation)/config/global_costmap_params.yaml"
+     command="load" />
+    <rosparam file="$(find navigation)/config/base_local_planner_params.yaml"
+     command="load" />
+    <remap from="cmd_vel" to="/robot_base_velocity_controller/cmd_vel"/>
+  </node>
+</launch>
