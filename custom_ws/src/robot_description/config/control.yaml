@@ -7,12 +7,14 @@ robot_base_velocity_controller:
   left_wheel: ['front_left_wheel_joint', 'rear_left_wheel_joint']
   right_wheel: ['front_right_wheel_joint', 'rear_right_wheel_joint']
   publish_rate: 50
-  pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
-  twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+  # pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+  # twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+  pose_covariance_diagonal : [0.00001, 0.00001, 1000000000000.0, 1000000000000.0, 1000000000000.0, 0.001]
+  twist_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
   cmd_vel_timeout: 0.5
-  wheel_separation : 0.445208
-  wheel_radius : 0.0625
-  base_frame_id: base_link
+  wheel_separation : 0.5
+  wheel_radius : 0.1
+  base_frame_id: base_footprint
   odom_frame_id: odom
   enable_odom_tf: true
   estimate_velocity_from_position: false

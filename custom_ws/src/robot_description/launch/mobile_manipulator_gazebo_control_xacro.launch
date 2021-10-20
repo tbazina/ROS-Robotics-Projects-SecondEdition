@@ -9,7 +9,7 @@
     <arg name="world_name" value="$(find robot_description)/worlds/postoffice.world"/>
   </include>
   <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"
-  args="-param robot_description -urdf -x 1 -y 2 -z 1 -model mobile_manipulator"/>
+  args="-param robot_description -urdf -x 1 -y 2 -z 0 -model mobile_manipulator"/>
 
   <!-- Arm arm_control.yaml and manager -->
   <rosparam file="$(find robot_description)/config/arm_control.yaml"

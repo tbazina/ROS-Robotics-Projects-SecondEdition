@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-  <!-- <node pkg="map_server" type="map_server" name="map_server" args=""/> -->
+  <node pkg="map_server" type="map_server" name="map_server"
+  args="$(find navigation)/maps/postoffice.yaml"/>
   <include file="$(find navigation)/launch/amcl_diff.launch" />
 
   <node pkg="move_base" type="move_base" name="move_base" output="screen"
